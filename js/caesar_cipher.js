@@ -1,24 +1,45 @@
 var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''),
-    character_indexed = {};
+    character_indexed = {},
+    character_replace_cached = {};
 
-
-function indexCharacterList() {
-    for (var i = 0; i < characters.length; i++) {
-        character_indexed[characters[i]] = i;
-    }
-}
-
-function caesar_cipher(secret_string, shift_number) {
-    var result = [],
-        curr_index, new_index, new_char;
+function caesar_cipher(secret_string, shift_number, on_missing) {
+    var caesar_result = [],
+        missing_characters = [],
+        missing_char,
+        curr_index,
+        curr_char,
+        new_index,
+        new_char;
 
     for (var i = 0; i < secret_string.length; i++) {
-        if (!character_indexed.hasOwnProperty(secret_string[i])) {
-            result.push(secret_string[i]);
+        curr_char = secret_string[i];
+
+        if (curr_char.trim().length === 0) {
+            caesar_result.push(curr_char);
+            continue;
+        }
+        if (character_replace_cached.hasOwnProperty(curr_char)) {
+            caesar_result.push(character_replace_cached[curr_char]);
+            continue;
+        }
+        if (!character_indexed.hasOwnProperty(curr_char)) {
+            missing_characters.push({
+                index: i,
+                char: curr_char
+            });
+
+            if (on_missing) {
+                missing_char = on_missing(curr_char);
+            } else {
+                missing_char = curr_char;
+            }
+
+            caesar_result.push(missing_char);
+            character_replace_cached[curr_char] = missing_char;
             continue;
         }
 
-        curr_index = character_indexed[secret_string[i]];
+        curr_index = character_indexed[curr_char];
         new_index = curr_index + shift_number;
 
         if (new_index < 0) {
@@ -29,19 +50,27 @@ function caesar_cipher(secret_string, shift_number) {
 
         new_char = characters[new_index];
 
-        result.push(new_char);
+        caesar_result.push(new_char);
+        character_replace_cached[curr_char] = new_char;
     }
 
-    return result.join('');
+    return {
+        result: caesar_result.join(''),
+        missing: missing_characters
+    };
 }
 
 function debug(shift_number) {
-    var content = [];
+    var content = [], new_index;
 
     for (var i = 0; i < characters.length; i++) {
+        new_index = i + shift_number;
+        if (new_index < 0) {
+            new_index += characters.length;
+        }
         content.push({
             src: characters[i],
-            dest: characters[(i + shift_number) % characters.length]
+            dest: characters[new_index % characters.length]
         });
     }
 
@@ -51,11 +80,29 @@ function debug(shift_number) {
 function isEncryptMode() {
     return $('input[name="mode"]:checked').val() === 'encrypt';
 }
-function caesar_it() {
-    var secret_string = $('#source').val().toUpperCase(),
-        shift_number = parseInt($('#shift_number').val());
 
-    $('#result').val(caesar_cipher(secret_string, isEncryptMode() ? shift_number : -1 * shift_number));
+function onMissingCB(missing_char) {
+    if (!missing_char.trim().length) {
+        return missing_char;
+    }
+
+    return '<strong class="text-danger">' + missing_char + '</strong>';
+}
+
+function caesar_it() {
+    var secret_string = $('#source').val().trim(),
+        shift_number, result;
+
+    if (!secret_string.length) {
+        return;
+    }
+
+    shift_number = parseInt($('#shift_number').val());
+    result = caesar_cipher(secret_string, isEncryptMode() ? shift_number : -1 * shift_number, onMissingCB);
+
+    $('#result').html(result.result.replace(/(?:\r\n|\r|\n)/g, '<br />'));
+    $('#result_help_block').toggleClass('hidden', result.missing.length === 0);
+
     addDebugInfo(shift_number);
 }
 
@@ -76,21 +123,62 @@ function addDebugInfo(shift_number) {
     }
 }
 
-function increase() {
+function changeShiftNumberValue(number) {
     var shif_number_dom = $('#shift_number'),
-        new_value = (parseInt(shif_number_dom.val()) + 1) % characters.length;
+        curr_value = parseInt(shif_number_dom.val()),
+        new_value = correctIndex(curr_value + number);
 
-    shif_number_dom.val(new_value).change();
+    if (new_value === 0) {
+        new_value = correctIndex(new_value + number);
+    }
+
+    if (curr_value != new_value) {
+        reset_cache();
+        shif_number_dom.val(new_value).change();
+    }
+}
+function increase() {
+    changeShiftNumberValue(1);
 }
 function decrease() {
-    var shif_number_dom = $('#shift_number'),
-        new_value = (parseInt(shif_number_dom.val()) - 1) % characters.length;
+    changeShiftNumberValue(-1);
+}
 
-    shif_number_dom.val(new_value).change();
+function correctIndex(index) {
+    index %= characters.length;
+
+    if (index < 0) {
+        index += characters.length;
+    }
+
+    return index;
+}
+
+function reset_cache() {
+    character_replace_cached = {};
+}
+function updateCharacterList(new_character_list) {
+    characters = new_character_list.trim().split('');
+    character_indexed = {};
+    reset_cache();
+
+    for (var i = 0; i < characters.length; i++) {
+        character_indexed[characters[i]] = i;
+    }
 }
 
 $('document').ready(function () {
-    indexCharacterList();
+    updateCharacterList('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+
+    function character_list_changed() {
+        updateCharacterList($(this).val());
+
+        if ($('#source').val()) {
+            caesar_it();
+        }
+    }
+
+    $('#character_list').on('change', character_list_changed);
 
     $('#shift_number').attr('max', characters.length)
         .attr('aria-valuemax', characters.length);

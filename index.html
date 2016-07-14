@@ -4,23 +4,45 @@
     <meta charset="UTF-8">
     <title>Caesar Cipher</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
           integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <style>
+        #character_list {
+            letter-spacing: 3px;
+        }
+    </style>
 </head>
 <body>
 <div class="container-fluid">
     <div class="row col-sm-12">
         <h1 class="text-info text-center">Caesar Cipher</h1>
-        <p class="text-muted text-center">by MaDnh</p>
+        <p class="text-muted text-center">by <a href="https://github.com/madnh">MaDnh</a></p>
     </div>
     <div class="row">
         <div class="col-xs-12">
             <div class="form-horizontal">
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">Text</label>
+                    <label class="col-sm-2 control-label">
+                        Character list
+                        <button class="btn btn-info visible-xs-inline-block" type="button" data-toggle="collapse"
+                                data-target="#character_list_collapse" aria-expanded="false"
+                                aria-controls="character_list_collapse">
+                            <i class="glyphicon glyphicon-pencil"></i> Edit
+                        </button>
+                    </label>
                     <div class="col-sm-10">
-                        <textarea class="form-control" id="source" rows="4">meet you in the park</textarea>
+                        <button class="btn btn-info hidden-xs" type="button" data-toggle="collapse"
+                                data-target="#character_list_collapse" aria-expanded="false"
+                                aria-controls="character_list_collapse">
+                            <i class="glyphicon glyphicon-pencil"></i> Edit
+                        </button>
+                        <div class="collapse" id="character_list_collapse">
+                            <br>
+                            <div class="well well-sm"><textarea class="form-control" id="character_list">ABCDEFGHIJKLMNOPQRSTUVWXYZ</textarea>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group">
@@ -38,8 +60,15 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">Shift number</label>
+                    <label class="col-sm-2 control-label">Message</label>
                     <div class="col-sm-10">
+                        <textarea class="form-control" id="source" rows="4"
+                                  placeholder="Super secret message here"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Shift number</label>
+                    <div class="col-sm-3">
                         <div class="input-group">
                             <input type="number" id="shift_number" class="form-control" value="1" readonly>
                             <span class="input-group-btn">
@@ -55,28 +84,47 @@
                 </div>
                 <div class="form-group">
                     <div class="col-sm-10 col-sm-offset-2">
-                        <button type="button" class="btn btn-lg btn-danger" onclick="caesar_it()">Caesar It!!!</button>
+                        <button type="button" class="btn btn-lg btn-danger" onclick="caesar_it()"><i
+                                class="glyphicon glyphicon-fire"></i> Ok, Caesar!!!
+                        </button>
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Result</label>
                     <div class="col-sm-10">
-                        <textarea class="form-control" id="result" rows="4" readonly></textarea>
+                        <div class="well text-success" id="result" style="font-weight: bold"></div>
+                        <span id="result_help_block" class="help-block hidden"><strong class="text-danger">*</strong> Red color text is missing character</span>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">Debug</label>
+                    <label class="col-sm-2 control-label">
+                        Debug
+                        <button class="btn btn-info visible-xs-inline-block" type="button" data-toggle="collapse"
+                                data-target="#debug_table_collapse" aria-expanded="false"
+                                aria-controls="debug_table_collapse">
+                            <i class="glyphicon glyphicon-info-sign"></i> Debug
+                        </button>
+                    </label>
                     <div class="col-sm-10">
-                        <table class="table table-striped" id="debug_table">
-                            <thead>
-                            <tr>
-                                <th>Index</th>
-                                <th>Source</th>
-                                <th>Destination</th>
-                            </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
+                        <button class="btn btn-info hidden-xs" type="button" data-toggle="collapse"
+                                data-target="#debug_table_collapse" aria-expanded="false"
+                                aria-controls="debug_table_collapse">
+                            <i class="glyphicon glyphicon-info-sign"></i> Debug
+                        </button>
+                        <div class="collapse" id="debug_table_collapse">
+                            <br>
+                            <table class="table table-striped" id="debug_table">
+                                <thead>
+                                <tr>
+                                    <th>Index</th>
+                                    <th>Source</th>
+                                    <th>Destination</th>
+                                </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+
                     </div>
                 </div>
 
