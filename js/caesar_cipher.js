@@ -181,5 +181,9 @@ $('document').ready(function () {
     $('#shift_number').attr('max', characters.length)
         .attr('aria-valuemax', characters.length);
 
-    $('#shift_number, input[name="mode"]').change(caesar_it);
+    $('#shift_number').change(caesar_it);
+    $('input[name="mode"]').change(function () {
+        reset_cache();
+        caesar_it();
+    });
 });
