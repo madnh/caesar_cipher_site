@@ -1,2 +1,2 @@
 # Simple Caesar Cipher Site
-![Screen](http://i.imgur.com/Ne7JITS.png)
+![Screen](http://i.imgur.com/1ic4SUX.png)
