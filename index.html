@@ -12,14 +12,19 @@
         #character_list {
             letter-spacing: 3px;
         }
+        img.avatar{
+            width: 80px;
+        }
     </style>
 </head>
 <body>
 <div class="container-fluid">
-    <div class="row col-sm-12">
-        <h1 class="text-info text-center">Caesar Cipher</h1>
-        <p class="text-muted text-center">by <a href="https://github.com/madnh">MaDnh</a></p>
+    <div class="row">
+        <div class="col-sm-12">
+            <h1 class="text-info text-center">Caesar Cipher</h1>
+        </div>
     </div>
+    <hr />
     <div class="row">
         <div class="col-xs-12">
             <div class="form-horizontal">
@@ -73,10 +78,14 @@
                             <input type="number" id="shift_number" class="form-control" value="1" readonly>
                             <span class="input-group-btn">
                                 <button type="button" class="btn btn-info" onclick="increase()">
+                                    <span class="visible-xs-inline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
                                     <i class="glyphicon glyphicon-plus"></i> <span class="hidden-xs">Increase</span>
+                                    <span class="visible-xs-inline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
                                 </button>
                                 <button type="button" class="btn btn-info" onclick="decrease()">
+                                    <span class="visible-xs-inline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
                                     <i class="glyphicon glyphicon-minus"></i> <span class="hidden-xs">Decrease</span>
+                                    <span class="visible-xs-inline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
                                 </button>
                             </span>
                         </div>
@@ -124,11 +133,20 @@
                                 <tbody></tbody>
                             </table>
                         </div>
-
                     </div>
                 </div>
-
             </div>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-xs-12">
+            <p class="text-muted text-center">
+                Author <a href="https://github.com/madnh">MaDnh</a>
+                <br>
+                <br>
+                <img src="https://avatars.githubusercontent.com/u/8559855?v=3" alt="MaDnh avatar" class="img-circle avatar">
+            </p>
         </div>
     </div>
 </div>
