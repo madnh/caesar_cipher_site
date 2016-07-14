@@ -1,11 +1,12 @@
 var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''),
     character_indexed = {},
     character_replace_cached = {},
-    character_missing_cached = [];
+    character_missing_cached = {};
 
 function caesar_cipher(secret_string, shift_number, on_missing) {
     var caesar_result = [],
         missing_char,
+        missing_chars = [],
         curr_index,
         curr_char,
         new_index,
@@ -18,13 +19,17 @@ function caesar_cipher(secret_string, shift_number, on_missing) {
             caesar_result.push(curr_char);
             continue;
         }
+        if (character_missing_cached.hasOwnProperty(curr_char)) {
+            missing_chars.push(curr_char);
+        }
         if (character_replace_cached.hasOwnProperty(curr_char)) {
             caesar_result.push(character_replace_cached[curr_char]);
             continue;
         }
         if (!character_indexed.hasOwnProperty(curr_char)) {
-            character_missing_cached.push(curr_char);
-
+            missing_chars.push(curr_char);
+            character_missing_cached[curr_char] = 1;
+            
             if (on_missing) {
                 missing_char = on_missing(curr_char);
             } else {
@@ -53,7 +58,7 @@ function caesar_cipher(secret_string, shift_number, on_missing) {
 
     return {
         result: caesar_result.join(''),
-        missing: character_missing_cached
+        missing: missing_chars
     };
 }
 
@@ -153,7 +158,7 @@ function correctIndex(index) {
 
 function reset_cache() {
     character_replace_cached = {};
-    character_missing_cached = [];
+    character_missing_cached = {};
 }
 function updateCharacterList(new_character_list) {
     characters = new_character_list.trim().split('');
