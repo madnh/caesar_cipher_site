@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Caesar Cipher</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+          integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row col-sm-12">
+        <h1 class="text-info text-center">Caesar Cipher</h1>
+        <p class="text-muted text-center">by MaDnh</p>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Text</label>
+                    <div class="col-sm-10">
+                        <textarea class="form-control" id="source" rows="4">meet you in the park</textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Mode</label>
+                    <div class="col-sm-10">
+                        <div class="btn-group" data-toggle="buttons">
+                            <label class="btn btn-info active">
+                                <input type="radio" name="mode" checked="checked" autocomplete="off" value="encrypt">
+                                Encrypt
+                            </label>
+                            <label class="btn btn-info">
+                                <input type="radio" name="mode" autocomplete="off" value="decrypt"> Decrypt
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Shift number</label>
+                    <div class="col-sm-10">
+                        <div class="input-group">
+                            <input type="number" id="shift_number" class="form-control" value="1" readonly>
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-info" onclick="increase()">
+                                    <i class="glyphicon glyphicon-plus"></i> <span class="hidden-xs">Increase</span>
+                                </button>
+                                <button type="button" class="btn btn-info" onclick="decrease()">
+                                    <i class="glyphicon glyphicon-minus"></i> <span class="hidden-xs">Decrease</span>
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-10 col-sm-offset-2">
+                        <button type="button" class="btn btn-lg btn-danger" onclick="caesar_it()">Caesar It!!!</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Result</label>
+                    <div class="col-sm-10">
+                        <textarea class="form-control" id="result" rows="4" readonly></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Debug</label>
+                    <div class="col-sm-10">
+                        <table class="table table-striped" id="debug_table">
+                            <thead>
+                            <tr>
+                                <th>Index</th>
+                                <th>Source</th>
+                                <th>Destination</th>
+                            </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-2.2.4.min.js"
+        integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+        integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+        crossorigin="anonymous"></script>
+<script src="js/caesar_cipher.js"></script>
+</body>
+</html>
