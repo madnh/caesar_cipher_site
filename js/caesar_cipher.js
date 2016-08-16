@@ -1,4 +1,4 @@
-var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''),
+var characters = [],
     character_indexed = {},
     character_replace_cached = {},
     character_missing_cached = {};
@@ -29,7 +29,7 @@ function caesar_cipher(secret_string, shift_number, on_missing) {
         if (!character_indexed.hasOwnProperty(curr_char)) {
             missing_chars.push(curr_char);
             character_missing_cached[curr_char] = 1;
-            
+
             if (on_missing) {
                 missing_char = on_missing(curr_char);
             } else {
@@ -171,8 +171,6 @@ function updateCharacterList(new_character_list) {
 }
 
 $('document').ready(function () {
-    updateCharacterList('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
-
     function character_list_changed() {
         updateCharacterList($(this).val());
 
@@ -191,4 +189,6 @@ $('document').ready(function () {
         reset_cache();
         caesar_it();
     });
+
+    $('#character_list').val('abcdefghijklmnopqrstuvwxyz').change();
 });
