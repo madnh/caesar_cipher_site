@@ -134,8 +134,7 @@ function caesar_list() {
         tmp_result = caesar_cipher(secret_string, isEncryptMode() ? i : -1 * i, false, onMissingCB);
         list_table_body.append([
             '<tr>',
-            '<td>' + i + '</td>',
-            '<td>' + characters[i] + '</td>',
+            '<td>' + characters[i] + ' (' + i + ')</td>',
             '<td class="text-success"><p class="lead"><strong>' + tmp_result.result + '</strong></p></td>',
             '</tr>'
         ].join("\n"));
