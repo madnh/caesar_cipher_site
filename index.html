@@ -12,8 +12,14 @@
         #character_list {
             letter-spacing: 3px;
         }
-        img.avatar{
+
+        img.avatar {
             width: 80px;
+        }
+
+        #source{
+            font-size: 1.5em;
+            letter-spacing: 3px;
         }
     </style>
 </head>
@@ -24,28 +30,44 @@
             <h1 class="text-info text-center">Caesar Cipher</h1>
         </div>
     </div>
-    <hr />
+    <hr/>
     <div class="row">
         <div class="col-xs-12">
             <div class="form-horizontal">
                 <div class="form-group">
                     <label class="col-sm-2 control-label">
                         Character list
-                        <button class="btn btn-info visible-xs-inline-block" type="button" data-toggle="collapse"
-                                data-target="#character_list_collapse" aria-expanded="false"
-                                aria-controls="character_list_collapse">
-                            <i class="glyphicon glyphicon-pencil"></i> Edit
-                        </button>
+                        <div class="btn-group visible-xs-inline-block" role="group">
+                            <button type="button" class="btn btn-info characters_alphabet">
+                                <i class="glyphicon glyphicon-sort-by-alphabet"></i> Alphabet</button>
+                            <button type="button" class="btn btn-info" data-toggle="collapse"
+                                    data-target="#character_list_collapse" aria-expanded="false"
+                                    aria-controls="character_list_collapse">
+                                <i class="glyphicon glyphicon-pencil"></i> Custom
+                            </button>
+                        </div>
                     </label>
                     <div class="col-sm-10">
-                        <button class="btn btn-info hidden-xs" type="button" data-toggle="collapse"
-                                data-target="#character_list_collapse" aria-expanded="false"
-                                aria-controls="character_list_collapse">
-                            <i class="glyphicon glyphicon-pencil"></i> Edit
-                        </button>
+                        <div class="btn-group hidden-xs" role="group">
+                            <button type="button" class="btn btn-info characters_alphabet">
+                                <i class="glyphicon glyphicon-sort-by-alphabet"></i> Alphabet</button>
+                            <button type="button" class="btn btn-info" data-toggle="collapse"
+                                    data-target="#character_list_collapse" aria-expanded="false"
+                                    aria-controls="character_list_collapse">
+                                <i class="glyphicon glyphicon-pencil"></i> Custom
+                            </button>
+                        </div>
                         <div class="collapse" id="character_list_collapse">
                             <br>
-                            <div class="well well-sm"><textarea class="form-control" id="character_list">abcdefghijklmnopqrstuvwxyz</textarea>
+                            <div class="well well-sm">
+                                <textarea class="form-control" id="character_list"></textarea>
+                                <br>
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-info btn-xs" id="character_list_upper">Upper
+                                    </button>
+                                    <button type="button" class="btn btn-info btn-xs" id="character_list_lower">Lower
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -56,10 +78,11 @@
                         <div class="btn-group" data-toggle="buttons">
                             <label class="btn btn-info active">
                                 <input type="radio" name="mode" checked="checked" autocomplete="off" value="encrypt">
-                                Encrypt
+                                <i class="glyphicon glyphicon-share"></i> Encrypt
                             </label>
                             <label class="btn btn-info">
-                                <input type="radio" name="mode" autocomplete="off" value="decrypt"> Decrypt
+                                <input type="radio" name="mode" autocomplete="off" value="decrypt">
+                                <i class="glyphicon glyphicon-check"></i> Decrypt
                             </label>
                         </div>
                     </div>
@@ -68,70 +91,120 @@
                     <label class="col-sm-2 control-label">Message</label>
                     <div class="col-sm-10">
                         <textarea class="form-control" id="source" rows="4"
-                                  placeholder="Super secret message here"></textarea>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">Shift number</label>
-                    <div class="col-sm-3">
-                        <div class="input-group">
-                            <input type="number" id="shift_number" class="form-control" value="1" readonly>
-                            <span class="input-group-btn">
-                                <button type="button" class="btn btn-info" onclick="increase()">
-                                    <span class="visible-xs-inline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                                    <i class="glyphicon glyphicon-plus"></i> <span class="hidden-xs">Increase</span>
-                                    <span class="visible-xs-inline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                                </button>
-                                <button type="button" class="btn btn-info" onclick="decrease()">
-                                    <span class="visible-xs-inline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                                    <i class="glyphicon glyphicon-minus"></i> <span class="hidden-xs">Decrease</span>
-                                    <span class="visible-xs-inline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                                </button>
-                            </span>
-                        </div>
+                                  placeholder="Super secret message here">abcdef</textarea>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-10 col-sm-offset-2">
-                        <button type="button" class="btn btn-lg btn-danger" onclick="caesar_it()"><i
-                                class="glyphicon glyphicon-fire"></i> Ok, Caesar!!!
+                        <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#list_modal">
+                            <i class="glyphicon glyphicon-list"></i> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;List&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        </button>
+                        <button type="button" class="btn btn-success btn-lg" data-toggle="modal" data-target="#manual_modal">
+                            <i class="glyphicon glyphicon-cog"></i> Manual
                         </button>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">Result</label>
-                    <div class="col-sm-10">
-                        <div class="well text-success" id="result" style="font-weight: bold"></div>
-                        <span id="result_help_block" class="help-block hidden"><strong class="text-danger">*</strong> Red color text is missing character</span>
+
+                <div class="modal fade" id="manual_modal" tabindex="-1" role="dialog" aria-labelledby="manual_modal_label">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                        aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="manual_modal_label">Manual</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Shift number</label>
+                                        <div class="col-sm-10">
+                                            <div class="input-group">
+                                                <input type="number" id="shift_number" class="form-control" value="1" readonly>
+                                                <span class="input-group-btn">
+                                                    <button type="button" class="btn btn-info" onclick="increase()">
+                                                        <span class="visible-xs-inline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                                        <i class="glyphicon glyphicon-plus"></i> <span class="hidden-xs">Increase</span>
+                                                        <span class="visible-xs-inline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                                    </button>
+                                                    <button type="button" class="btn btn-info" onclick="decrease()">
+                                                        <span class="visible-xs-inline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                                        <i class="glyphicon glyphicon-minus"></i> <span class="hidden-xs">Decrease</span>
+                                                        <span class="visible-xs-inline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                                    </button>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-10 col-sm-offset-2">
+                                            <button type="button" class="btn btn-lg btn-danger" onclick="caesar_manual()"><i
+                                                    class="glyphicon glyphicon-fire"></i> Ok, Caesar!!!
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Result</label>
+                                        <div class="col-sm-10">
+                                            <div class="well text-success" id="result" style="font-weight: bold"></div>
+                                            <span class="help-block"><strong class="text-danger">* Red color</strong> text is missing character</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">
+                                            Debug
+                                            <button class="btn btn-info visible-xs-inline-block" type="button" data-toggle="collapse"
+                                                    data-target="#debug_table_collapse" aria-expanded="false"
+                                                    aria-controls="debug_table_collapse">
+                                                <i class="glyphicon glyphicon-info-sign"></i> Debug
+                                            </button>
+                                        </label>
+                                        <div class="col-sm-10">
+                                            <button class="btn btn-info hidden-xs" type="button" data-toggle="collapse"
+                                                    data-target="#debug_table_collapse" aria-expanded="false"
+                                                    aria-controls="debug_table_collapse">
+                                                <i class="glyphicon glyphicon-info-sign"></i> Debug
+                                            </button>
+                                            <div class="collapse" id="debug_table_collapse">
+                                                <br>
+                                                <table class="table table-striped" id="debug_table">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>Index</th>
+                                                        <th>Source</th>
+                                                        <th>Destination</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody></tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">
-                        Debug
-                        <button class="btn btn-info visible-xs-inline-block" type="button" data-toggle="collapse"
-                                data-target="#debug_table_collapse" aria-expanded="false"
-                                aria-controls="debug_table_collapse">
-                            <i class="glyphicon glyphicon-info-sign"></i> Debug
-                        </button>
-                    </label>
-                    <div class="col-sm-10">
-                        <button class="btn btn-info hidden-xs" type="button" data-toggle="collapse"
-                                data-target="#debug_table_collapse" aria-expanded="false"
-                                aria-controls="debug_table_collapse">
-                            <i class="glyphicon glyphicon-info-sign"></i> Debug
-                        </button>
-                        <div class="collapse" id="debug_table_collapse">
-                            <br>
-                            <table class="table table-striped" id="debug_table">
-                                <thead>
-                                <tr>
-                                    <th>Index</th>
-                                    <th>Source</th>
-                                    <th>Destination</th>
-                                </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
+                <div class="modal fade" id="list_modal" tabindex="-1" role="dialog" aria-labelledby="list_modal_label">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="list_modal_label">List</h4>
+                            </div>
+                            <div class="modal-body">
+                                <p><strong class="text-danger">* Red color</strong> text is missing character</p>
+                                <table class="table table-striped" id="list_table">
+                                    <thead>
+                                    <tr>
+                                        <th>Shift value</th>
+                                        <th>Replace "<strong class="text-danger"><span id="first_character"></span></strong>" by</th>
+                                        <th>Result</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -145,7 +218,8 @@
                 Author <a href="https://github.com/madnh">MaDnh</a>
                 <br>
                 <br>
-                <img src="https://avatars.githubusercontent.com/u/8559855?v=3" alt="MaDnh avatar" class="img-circle avatar">
+                <img src="https://avatars.githubusercontent.com/u/8559855?v=3" alt="MaDnh avatar"
+                     class="img-circle avatar">
             </p>
         </div>
     </div>

@@ -3,7 +3,15 @@ var characters = [],
     character_replace_cached = {},
     character_missing_cached = {};
 
-function caesar_cipher(secret_string, shift_number, on_missing) {
+/**
+ *
+ * @param secret_string
+ * @param shift_number
+ * @param {boolean} [use_cache = false]
+ * @param on_missing
+ * @return {{result: string, missing: Array}}
+ */
+function caesar_cipher(secret_string, shift_number, use_cache, on_missing) {
     var caesar_result = [],
         missing_char,
         missing_chars = [],
@@ -11,6 +19,10 @@ function caesar_cipher(secret_string, shift_number, on_missing) {
         curr_char,
         new_index,
         new_char;
+
+    if(typeof use_cache === 'undefined'){
+        use_cache = true;
+    }
 
     for (var i = 0; i < secret_string.length; i++) {
         curr_char = secret_string[i];
@@ -22,7 +34,7 @@ function caesar_cipher(secret_string, shift_number, on_missing) {
         if (character_missing_cached.hasOwnProperty(curr_char)) {
             missing_chars.push(curr_char);
         }
-        if (character_replace_cached.hasOwnProperty(curr_char)) {
+        if (use_cache && character_replace_cached.hasOwnProperty(curr_char)) {
             caesar_result.push(character_replace_cached[curr_char]);
             continue;
         }
@@ -49,11 +61,13 @@ function caesar_cipher(secret_string, shift_number, on_missing) {
         }
 
         new_index %= characters.length;
-
         new_char = characters[new_index];
 
         caesar_result.push(new_char);
-        character_replace_cached[curr_char] = new_char;
+
+        if(use_cache){
+            character_replace_cached[curr_char] = new_char;
+        }
     }
 
     return {
@@ -91,7 +105,7 @@ function onMissingCB(missing_char) {
     return '<strong class="text-danger">' + missing_char + '</strong>';
 }
 
-function caesar_it() {
+function caesar_manual() {
     var secret_string = $('#source').val().trim(),
         shift_number, result;
 
@@ -100,12 +114,32 @@ function caesar_it() {
     }
 
     shift_number = parseInt($('#shift_number').val());
-    result = caesar_cipher(secret_string, isEncryptMode() ? shift_number : -1 * shift_number, onMissingCB);
+    result = caesar_cipher(secret_string, isEncryptMode() ? shift_number : -1 * shift_number, true, onMissingCB);
 
     $('#result').html(result.result.replace(/(?:\r\n|\r|\n)/g, '<br />'));
-    $('#result_help_block').toggleClass('hidden', result.missing.length === 0);
 
     addDebugInfo(shift_number);
+}
+function caesar_list() {
+    var secret_string = $('#source').val().trim(),
+        result = [],
+        tmp_result,
+        list_table = $('#list_table'),
+        list_table_body = list_table.find('tbody');
+
+    $('#first_character').text(characters[0]);
+    list_table_body.html('');
+
+    for (var i = 1; i < characters.length; i++) {
+        tmp_result = caesar_cipher(secret_string, isEncryptMode() ? i : -1 * i, false, onMissingCB);
+        list_table_body.append([
+            '<tr>',
+            '<td>' + i + '</td>',
+            '<td>' + characters[i] + '</td>',
+            '<td class="text-success"><p class="lead"><strong>' + tmp_result.result + '</strong></p></td>',
+            '</tr>'
+        ].join("\n"));
+    }
 }
 
 function addDebugInfo(shift_number) {
@@ -160,7 +194,7 @@ function reset_cache() {
     character_replace_cached = {};
     character_missing_cached = {};
 }
-function updateCharacterList(new_character_list) {
+function updateCharacterList(new_character_list, callback) {
     characters = new_character_list.trim().split('');
     character_indexed = {};
     reset_cache();
@@ -168,27 +202,37 @@ function updateCharacterList(new_character_list) {
     for (var i = 0; i < characters.length; i++) {
         character_indexed[characters[i]] = i;
     }
-}
 
-$('document').ready(function () {
-    function character_list_changed() {
-        updateCharacterList($(this).val());
-
-        if ($('#source').val()) {
-            caesar_it();
-        }
+    if (callback) {
+        callback();
     }
+}
+$('document').ready(function () {
+    var alphabet_characters = 'abcdefghijklmnopqrstuvwxyz';
+    var character_list = $('#character_list');
 
-    $('#character_list').on('change', character_list_changed);
+    character_list.on('change', function () {
+        updateCharacterList($(this).val());
+    });
+
+    $('#character_list_upper').click(function () {
+        character_list.val(character_list.val().toUpperCase()).change();
+    });
+    $('#character_list_lower').click(function () {
+        character_list.val(character_list.val().toLowerCase()).change();
+    });
+
 
     $('#shift_number').attr('max', characters.length)
         .attr('aria-valuemax', characters.length);
 
-    $('#shift_number').change(caesar_it);
-    $('input[name="mode"]').change(function () {
-        reset_cache();
-        caesar_it();
-    });
+    $('#shift_number').change(caesar_manual);
+    $('input[name="mode"]').change(reset_cache);
 
-    $('#character_list').val('abcdefghijklmnopqrstuvwxyz').change();
+    $('.characters_alphabet').click(function () {
+        character_list.val(alphabet_characters).change();
+    }).click();
+
+    $('#list_modal').on('shown.bs.modal', caesar_list);
+    $('#manual_modal').on('shown.bs.modal', caesar_manual);
 });
